@@ -1,16 +1,7 @@
 const express = require("express");
 const indexRouter = require("./src/routes/index.route");
-const debugmodule = require("debug");
+const debug = require("debug")("express-template:application");
 const morgan = require("morgan");
-
-// init debug loggers
-const debug = debugmodule("express-template:application");
-const error = debugmodule("express-template:error");
-
-// set debug colors
-// source https://www.ditig.com/256-colors-cheat-sheet
-error.color = 1; // 1 is red
-debug.color = 4; // 4 blue
 
 // init app
 const app = express();
@@ -41,7 +32,7 @@ app.use((err, req, res, next) => {
   if (res.headersSent) {
     return next(err);
   }
-  error(err.stack);
+  console.error(err.stack);
 
   // tell the client that something wrong happened but never tell him what exactly happened
   // otherwise you will be exploited
@@ -59,7 +50,8 @@ const gracefulShutdown = () => {
     debug("Closing server...");
     server.close((err) => {
       if (err) {
-        debug("Failed to gracefully shutdown server");
+        console.error("Failed to gracefully shutdown server");
+        console.error(`${err.name}: ${err.message}`);
       } else {
         debug("Server closed successfully");
       }
