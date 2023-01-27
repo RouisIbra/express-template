@@ -2,12 +2,19 @@ const express = require("express");
 const indexRouter = require("./src/routes/index.route");
 const debug = require("debug")("express-template:application");
 const morgan = require("morgan");
+const helmet = require("helmet");
 
 // init app
 const app = express();
 
 // define port
 const port = process.env.PORT || 3000;
+
+// reduce fingerprinting
+app.disable("x-powered-by");
+
+// enable helmet
+app.use(helmet());
 
 // enable http request logger
 app.use(morgan("dev"));
